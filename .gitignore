@@ -1,0 +1,14 @@
+# Compiling results
+obj/
+*.o
+*.so
+*.exe
+
+# Logs
+*.log
+
+# Automatically generated files
+config.*
+
+# Executable
+notabotc
