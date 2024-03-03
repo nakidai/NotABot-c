@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <concord/discord.h>
 #include <concord/log.h>
 
@@ -30,8 +31,11 @@ void on_ready(
     struct discord *client,
     const struct discord_ready *event
 ) {
-    struct discord_create_global_application_command params;
+    log_info("Starting...");
 
+
+    log_info("Creating commands...");
+    struct discord_create_global_application_command params;
 
     params = (struct discord_create_global_application_command)
     {
