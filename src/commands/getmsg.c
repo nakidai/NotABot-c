@@ -26,7 +26,7 @@ struct discord_interaction_response command_getmsg(
     errno = 0;
     message_id = strtoull(
         event->data->options->array[0].value,
-        (char **)NULL,
+        NULL,
         10
     );
     if (errno || !string_isnumber(event->data->options->array[0].value))
@@ -42,7 +42,18 @@ struct discord_interaction_response command_getmsg(
     }
     else
     {
-        /* TODO: write hadnler for second argument */
+        errno = 0;
+        channel_id = strtoull(
+            event->data->options->array[1].value,
+            NULL,
+            10
+        );
+        if (errno || !string_isnumber(event->data->options->array[1].value))
+        {
+            data->content = stralloc("Invalid ChannelID");
+            data->flags |= DISCORD_MESSAGE_EPHEMERAL;
+            return response;
+        }
     }
 
     struct discord_message message = {0};
