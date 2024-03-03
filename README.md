@@ -4,4 +4,5 @@ NotABot-c
 
 Dependencies
 --
-This bot depends on [`concord`](https://github.com/Cogmasters/concord).
+- [`concord`](https://github.com/Cogmasters/concord) - discord api wrapper
+- [`pcre2`](https://www.pcre.org/) - regular expressions
