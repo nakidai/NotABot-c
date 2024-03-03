@@ -4,7 +4,7 @@ INCLUDE = -Iinclude
 RM      = rm -f
 SRCDIR  = src
 OBJDIR  = obj
-SRC     = main.c
+SRC     = main.c other.c commands/getmsg.c
 OBJ     = $(addprefix $(OBJDIR)/,$(SRC:.c=.o))
 DEFLDFLAGS = -L/usr/local/lib -pthread -ldiscord -lcurl
 
@@ -13,13 +13,16 @@ all: notabotc
 obj:
 	mkdir -p $(OBJDIR)
 
-obj/%.o: $(SRCDIR)/%.c
-	$(CC) -c -o $@ $< $(CFLAGS) $(INCLUDE)
+obj/commands: obj
+	mkdir -p obj/commands
 
-notabotc: obj $(OBJ)
+obj/%.o: $(SRCDIR)/%.c
+	$(CC) -c -std=c11 -o $@ $< $(CFLAGS) $(INCLUDE)
+
+notabotc: obj obj/commands $(OBJ)
 	$(CC) -o notabotc $(OBJ) $(DEFLDFLAGS) $(LDFLAGS)
 
 clean:
-	$(RM) notabotc obj/*.o
+	$(RM) notabotc obj/*.o obj/commands/*.o
 
 .PHONY: all clean concord
