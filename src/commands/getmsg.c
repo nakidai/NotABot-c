@@ -2,9 +2,13 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <stddef.h>
 
 #include <concord/log.h>
 #include <concord/discord.h>
+
+#define PCRE2_CODE_UNIT_WIDTH 8
+#include <pcre2.h>
 
 #include "commands/getmsg.h"
 #include "other.h"
@@ -70,6 +74,7 @@ struct discord_interaction_response command_getmsg(
         return response;
     }
 
+    char *content_before = malloc(DISCORD_MAX_MESSAGE_LEN);
     data->content = malloc(DISCORD_MAX_MESSAGE_LEN);
     snprintf(
         data->content,
@@ -80,6 +85,55 @@ struct discord_interaction_response command_getmsg(
         message.timestamp, message.timestamp,
         message.content
     );
+
+    int error;
+    PCRE2_SIZE error_ofs;
+    size_t message_len = DISCORD_MAX_MESSAGE_LEN;
+    pcre2_code *re = pcre2_compile(
+        "<@(\\d+)>",
+        PCRE2_ZERO_TERMINATED,
+        0,
+        &error,
+        &error_ofs,
+        NULL
+    );
+    pcre2_substitute(
+        re,
+        data->content,
+        PCRE2_ZERO_TERMINATED,
+        0,
+        PCRE2_SUBSTITUTE_GLOBAL,
+        NULL,
+        NULL,
+        "<ping>",
+        PCRE2_ZERO_TERMINATED,
+        content_before,
+        &message_len
+    );
+    pcre2_code_free(re);
+
+    re = pcre2_compile(
+        "<@&(\\d+)>",
+        PCRE2_ZERO_TERMINATED,
+        0,
+        &error,
+        &error_ofs,
+        NULL
+    );
+    pcre2_substitute(
+        re,
+        content_before,
+        PCRE2_ZERO_TERMINATED,
+        0,
+        PCRE2_SUBSTITUTE_GLOBAL,
+        NULL,
+        NULL,
+        "<role ping>",
+        PCRE2_ZERO_TERMINATED,
+        data->content,
+        &message_len
+    );
+    pcre2_code_free(re);
 
     discord_message_cleanup(&message);
     return response;

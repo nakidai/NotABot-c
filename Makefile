@@ -6,7 +6,7 @@ SRCDIR  = src
 OBJDIR  = obj
 SRC     = main.c other.c commands/getmsg.c
 OBJ     = $(addprefix $(OBJDIR)/,$(SRC:.c=.o))
-DEFLDFLAGS = -L/usr/local/lib -pthread -ldiscord -lcurl
+DEFLDFLAGS = -L/usr/local/lib -pthread -ldiscord -lcurl -lpcre2-8
 
 all: notabotc
 
