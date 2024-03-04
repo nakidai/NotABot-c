@@ -82,7 +82,7 @@ struct discord_interaction_response command_getmsg(
         "User %s sent [message](https://discord.com/channels/%llu/%llu/%llu) <t:%llu:D><t:%llu:T>\n%s",
         message.author->username,
         message.guild_id, message.channel_id, message.id,
-        message.timestamp, message.timestamp,
+        message.timestamp / 1000, message.timestamp / 1000,
         message.content
     );
 
